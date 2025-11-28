@@ -1,7 +1,7 @@
 # PARA Note App Documentation
 
 ## 📱 프로젝트 개요
-PARA 방법론을 구현한 개인 생산성 관리 모바일 앱
+PARA 방법론을 구현한 개인 생산성 관리 모바일 웹앱
 
 **PARA란?**
 Tiago Forte가 개발한 디지털 정보 조직화 시스템으로, 모든 정보를 **"실행 가능성(Actionability)"** 기준으로 분류합니다.
@@ -58,28 +58,6 @@ Content (영속적 정보) + Container Metadata (영역별 속성) = 유연한 �
 
 ---
 
-
-## 📝 개발 가이드라인
-
-### Git Commit Convention
-```
-feat: 새로운 기능 추가
-fix: 버그 수정
-docs: 문서 수정
-style: 코드 포맷팅
-refactor: 코드 리팩토링
-test: 테스트 코드
-chore: 빌드 업무 수정
-```
-
-### 브랜치 전략
-- `main`: 프로덕션 배포
-- `develop`: 개발 통합
-- `feature/*`: 기능 개발
-- `fix/*`: 버그 수정
-
----
-
 ## 📱 주요 화면
 
 | Home | Projects | Areas | Resources |
@@ -110,8 +88,8 @@ Archive → Any (복원)
 ### Phase 1 (MVP)
 - [x] 기본 UI 구현
 - [x] 데이터 모델 설계
-- [ ] 로컬 DB 연동
-- [ ] Content CRUD
+- [x] 로컬 DB 연동
+- [x] Content CRUD
 - [ ] 기본 이동 기능
 
 ### Phase 2
@@ -130,5 +108,3 @@ Archive → Any (복원)
 ## 📚 참고 자료
 
 - [PARA Method](https://fortelabs.co/blog/para/)
-- [Flutter Documentation](https://docs.flutter.dev/)
-- [MVVM Pattern Guide](https://docs.flutter.dev/app-architecture/guide)
