@@ -41,8 +41,15 @@ jobs:
         docker build -t $IMAGE_NAME:latest .
         docker push $IMAGE_NAME:latest
 
-    - name: Deploy to OCI
-      script: |
-        cd ~
-        docker compose pull app
-        docker compose up -d app
+    - name: Deploy to OCI Instance
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.OCI_HOST }}
+        username: ubuntu
+        key: ${{ secrets.OCI_SSH_KEY }}
+        script: |
+          cd ~
+          docker compose pull app
+          docker compose up -d app
+          sleep 5
+          docker logs para-app --tail 30
