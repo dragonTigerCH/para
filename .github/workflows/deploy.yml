@@ -49,7 +49,7 @@ jobs:
         key: ${{ secrets.OCI_SSH_KEY }}
         script: |
           cd ~
-          docker compose pull app
-          docker compose up -d app
+          docker-compose pull app
+          docker-compose up -d app
           sleep 5
           docker logs para-app --tail 30
