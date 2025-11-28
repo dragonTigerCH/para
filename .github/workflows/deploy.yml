@@ -41,31 +41,8 @@ jobs:
         docker build -t $IMAGE_NAME:latest .
         docker push $IMAGE_NAME:latest
 
-    - name: Deploy to OCI Instance
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.OCI_HOST }}
-        username: ubuntu
-        key: ${{ secrets.OCI_SSH_KEY }}
-        script: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-          IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/para-note-api:latest
-          docker pull $IMAGE_NAME
-
-          docker stop para-app || true
-          docker rm para-app || true
-
-          docker run -d \
-            --name para-app \
-            --network para-network \
-            -p 8080:8080 \
-            -e SPRING_PROFILES_ACTIVE=prod \
-            -e GOOGLE_CLIENT_ID="${{ secrets.GOOGLE_CLIENT_ID }}" \
-            -e GOOGLE_CLIENT_SECRET="${{ secrets.GOOGLE_CLIENT_SECRET }}" \
-            --memory=550m \
-            --restart unless-stopped \
-            $IMAGE_NAME
-
-          sleep 10
-          docker logs para-app --tail 50
+    - name: Deploy to OCI
+      script: |
+        cd ~
+        docker compose pull app
+        docker compose up -d app
