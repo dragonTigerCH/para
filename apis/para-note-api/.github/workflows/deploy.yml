@@ -1,0 +1,68 @@
+name: Deploy to OCI
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: 'gradle'
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Build JAR with Gradle
+      run: ./gradlew bootJar --no-daemon
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push Docker image
+      run: |
+        IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/para-note-api
+        docker build -t $IMAGE_NAME:latest .
+        docker push $IMAGE_NAME:latest
+
+    - name: Deploy to OCI Instance
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.OCI_HOST }}
+        username: ubuntu
+        key: ${{ secrets.OCI_SSH_KEY }}
+        script: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+          IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/para-note-api:latest
+          docker pull $IMAGE_NAME
+
+          docker stop para-app || true
+          docker rm para-app || true
+
+          docker run -d \
+            --name para-app \
+            --network para-network \
+            -p 8080:8080 \
+            -e SPRING_PROFILES_ACTIVE=prod \
+            -e GOOGLE_CLIENT_ID="${{ secrets.GOOGLE_CLIENT_ID }}" \
+            -e GOOGLE_CLIENT_SECRET="${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+            --memory=550m \
+            --restart unless-stopped \
+            $IMAGE_NAME
+
+          sleep 10
+          docker logs para-app --tail 50

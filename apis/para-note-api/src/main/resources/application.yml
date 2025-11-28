@@ -1,0 +1,47 @@
+server:
+  port: ${PORT:8282}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  application:
+    name: para-note-api
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
+
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:db/initial.sql
+      encoding: UTF-8
+
+
+jwt:
+  secret: ${JWT_SECRET:paraparaparaparaparaparaparaparaparaparaparaparaparaparaparaparaparaparaparaparaparapara}
+  access-expiration: 1h
+  refresh-expiration: 24h
+
+
+
+logging:
+  level:
+    root: INFO
+    com.paranote.api: DEBUG
+    org.hibernate.SQL: DEBUG
+

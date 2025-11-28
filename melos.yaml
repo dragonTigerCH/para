@@ -1,0 +1,8 @@
+name: para-note-workspace
+packages:
+  - apps/mobile/**
+  - packages/**
+
+scripts:
+  analyze: melos exec -- flutter analyze
+  format: melos exec -- flutter format .
