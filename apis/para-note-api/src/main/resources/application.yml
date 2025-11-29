@@ -32,6 +32,16 @@ jwt:
 
 
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+
 logging:
   level:
     root: INFO
