@@ -25,13 +25,6 @@ spring:
             user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
             user-name-attribute: sub
 
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:db/initial.sql
-      encoding: UTF-8
-
-
 jwt:
   secret: ${JWT_SECRET:paraparaparaparaparaparaparaparaparaparaparaparaparaparaparaparaparaparaparaparaparapara}
   access-expiration: 1h

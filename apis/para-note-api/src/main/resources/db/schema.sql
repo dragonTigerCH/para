@@ -10,6 +10,33 @@
 --
 -- ============================================================================
 
+-- para 스키마 생성
+CREATE SCHEMA IF NOT EXISTS para;
+
+-- ============================================================================
+-- Users: 사용자 정보
+-- ============================================================================
+CREATE TABLE para.users (
+    id BIGSERIAL PRIMARY KEY,
+    identifier VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255),
+    name VARCHAR(100) NOT NULL,
+    social_provider VARCHAR(50),
+    authorities VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    created_by BIGINT NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_by BIGINT NOT NULL
+);
+
+CREATE INDEX idx_users_identifier ON para.users(identifier);
+CREATE INDEX idx_users_social_provider ON para.users(social_provider) WHERE social_provider IS NOT NULL;
+
+COMMENT ON TABLE para.users IS '사용자 정보';
+COMMENT ON COLUMN para.users.identifier IS '로그인 ID (이메일 또는 소셜 ID)';
+COMMENT ON COLUMN para.users.password IS '비밀번호 (소셜 로그인 시 NULL)';
+COMMENT ON COLUMN para.users.social_provider IS '소셜 로그인 제공자 (google, github 등)';
+
 -- ============================================================================
 -- Container: PARA의 핵심 컨테이너
 -- ============================================================================

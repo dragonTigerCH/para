@@ -5,6 +5,15 @@ spring:
     password: ${DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
+  # SQL 초기화 설정 (schema.sql -> initial.sql 순서로 실행)
+  sql:
+    init:
+      mode: never  # prod에서는 수동으로 관리 (자동 실행 방지)
+      schema-locations: classpath:db/schema.sql
+      data-locations: classpath:db/initial.sql
+      encoding: UTF-8
+      continue-on-error: false
+
   jpa:
     hibernate:
       ddl-auto: none
