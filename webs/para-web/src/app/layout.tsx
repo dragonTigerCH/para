@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: "PARA 방법론 기반 프로젝트 관리 대시보드",
 };
 
-const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
 
 export default function RootLayout({
   children,
