@@ -88,3 +88,37 @@ export interface ContainerWithAttributes {
   resource?: Resource;
   archive?: Archive;
 }
+
+// ============================================================================
+// Auth Types
+// ============================================================================
+
+export interface AuthToken {
+  token: string;
+  expiration: string;
+}
+
+export interface User {
+  id: number;
+  email: string;
+  name: string | null;
+  authority: string;
+}
+
+export interface LoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  access: AuthToken;
+  refresh: AuthToken;
+  type: string;
+}
+
+export interface OAuth2LoginResponse {
+  access: AuthToken;
+  refresh: AuthToken;
+  tokenType: string;
+  user: User;
+}

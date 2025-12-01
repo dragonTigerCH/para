@@ -25,6 +25,7 @@ interface AuthService {
     fun oauth2Login(
         identifier: Email,
         social: Social,
+        name: String?,
         authority: Authority,
     ): Pair<AuthToken, AuthToken>
 }
@@ -72,11 +73,12 @@ class AuthServiceImpl(
     override fun oauth2Login(
         identifier: Email,
         social: Social,
+        name: String?,
         authority: Authority
     ): Pair<AuthToken, AuthToken> {
 
         val user = authRepository.findByIdentifier(identifier)
-            ?: createUser(identifier, Password(""), null, social, authority)
+            ?: createUser(identifier, Password(""), name, social, authority)
                 .run { authRepository.save(this) }
 
         val accessToken = jwtTokenService.accessToken(user)

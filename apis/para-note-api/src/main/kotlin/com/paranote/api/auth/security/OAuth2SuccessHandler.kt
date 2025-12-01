@@ -5,6 +5,7 @@ import com.paranote.api.auth.AuthService
 import com.paranote.api.auth.AuthToken
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Component
 @Component
 class OAuth2SuccessHandler(
     private val authService: AuthService,
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
+    @Value("\${app.frontend.url}")
+    private val url: String
 ): AuthenticationSuccessHandler {
 
     override fun onAuthenticationSuccess(
@@ -27,6 +30,7 @@ class OAuth2SuccessHandler(
         val (accessToken, refreshToken) = authService.oauth2Login(
             identifier = principal.user.identifier,
             social = principal.user.social!!,
+            name = principal.user.name,
             authority = principal.user.authority
         )
 
@@ -43,13 +47,13 @@ class OAuth2SuccessHandler(
             )
         )
 
-        // HTTP 응답 설정
-        response.contentType = MediaType.APPLICATION_JSON_VALUE
-        response.characterEncoding = "UTF-8"
-        response.status = HttpServletResponse.SC_OK
+        // JSON을 Base64로 인코딩 (URL safe, UTF-8)
+        val jsonData = objectMapper.writeValueAsString(responseBody)
+        val encodedData = java.util.Base64.getUrlEncoder().encodeToString(jsonData.toByteArray(Charsets.UTF_8))
 
-        // JSON 응답 쓰기
-        objectMapper.writeValue(response.writer, responseBody)
+        // 프론트엔드 콜백 페이지로 리다이렉트 (fragment 사용)
+        val redirectUrl = "$url/auth/callback#data=$encodedData"
+        response.sendRedirect(redirectUrl)
     }
 }
 
